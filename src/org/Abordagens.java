@@ -6,103 +6,154 @@ import java.util.Random;
 
 public class Abordagens {
 
-	private static int TAMANHOMOCHILA = 3;
-	private static List<Item> Mochila;
+	// SET THE BACKPACK SIZE
+
+	private static int backpackSize = 120;
+
+	// CREATE THE BACKPACK
+
+	private static List<Item> backpack;
 
 	public static void main(String[] args) {
-		Mochila = new ArrayList<Item>();
+
+		// CREATE A NEW INSTANCE OF BACKPACK AND A RANDOM GENERATOR
+
+		backpack = new ArrayList<Item>();
 		Random r = new Random();
 
-		for (int i = 0; i < TAMANHOMOCHILA; i++) {
-			Mochila.add(new Item(i, r.nextInt(100), r.nextInt(100)));
+		for (int i = 0; i < backpackSize; i++) {
+			backpack.add(new Item(r.nextInt(100), r.nextInt(100)));
 		}
 
-		for (Item i : Mochila) {
+		for (Item i : backpack) {
 			System.out.println(i.toString());
 		}
 
-		AbordagemPorValor(Mochila, 100);
-		// AbordagemPorPeso(Mochila, 50);
+		profitApproach(backpack, 50);
+		wheightApproach(backpack, 50);
+		densityApproach(backpack, 50);
 	}
 
-	public static void AbordagemPorValor(List<Item> Mochila, double pesomax) {
+	public static void profitApproach(List<Item> backpack, double maxWheight) {
 
-		double pesoTotal = 0;
-		double valorTotal = 0;
-		double pesoAtual = 0;
-		double valorAtual;
+		List<Item> backpack2 = new ArrayList<Item>(backpack);
+		double wheightSum = 0;
+		double totalValue = 0;
+		boolean choose = true;
 
-		while (!Mochila.isEmpty() && (pesoTotal + pesoAtual) <= pesomax)
+		Item selectedItem;
 
-		{
-			Item ItemAtual = null;
-			double ValorMax = 0;
-			valorAtual = 0;
-			pesoAtual = 0;
+		while (!backpack2.isEmpty() && wheightSum <= maxWheight
+				&& choose == true) {
 
-			for (Item i : Mochila) {
-				if (i.getPeso() + pesoTotal <= pesomax) {
-					if (ValorMax < i.getValor()) {
-						ValorMax = i.getValor();
-						pesoAtual = i.getPeso();
-						valorAtual = i.getValor();
-						ItemAtual = i;
+			choose = false;
+			selectedItem = null;
+			double valueNow = 0;
+
+			for (Item i : backpack2) {
+				if (valueNow < i.getValue()) {
+					if ((i.getWheight() + wheightSum) <= maxWheight) {
+						valueNow = i.getValue();
+						selectedItem = i;
+						choose = true;
 					}
 				}
+
 			}
-			
-			Mochila.remove(ItemAtual);
-			pesoTotal += pesoAtual;
-			valorTotal += valorAtual;
-			
 
-		}
-
-		System.out.println("VALOR TOTAL NA ABORDAGEM POR VALOR == "
-				+ valorTotal);
-
-	}
-
-	public static void AbordagemPorPeso(List<Item> Mochila, int pesomax) {
-
-		double pesoTotal = 0;
-		double valorTotal = 0;
-
-		double valorAtual;
-		double pesoAtual;
-		Item itemAtual = null;
-
-		do {
-
-			valorAtual = 0;
-			pesoAtual = 100;
-
-			for (Item i : Mochila) {
-
-				if (i.getPeso() <= pesoAtual) {
-					valorAtual = i.getValor();
-					pesoAtual = i.getPeso();
-					itemAtual = i;
+			if (choose == true) {
+				if (selectedItem.getWheight() + wheightSum <= maxWheight) {
+					wheightSum = wheightSum + selectedItem.getWheight();
+					totalValue = totalValue + selectedItem.getValue();
+					backpack2.remove(selectedItem);
 				}
 
 			}
 
-			pesoTotal += pesoAtual;
-
-			if (pesoTotal > pesomax) {
-				Mochila.remove(itemAtual);
-				valorTotal += valorAtual;
-			}
-
-		} while (pesoTotal <= pesomax && !Mochila.isEmpty());
-
-		// System.out.println("\n === MOCHILA DEPOIS === \n");
-
-		// for (Item i : Mochila) {
-		// System.out.println(i.toString() + "\n");
-		// }
-		System.out.println(valorTotal);
+		}
+		System.out.println("TOTAL VALUE IN VALUE APPROACH == " + totalValue);
 
 	}
 
+	public static void wheightApproach(List<Item> backpack, double maxWheight) {
+
+		List<Item> backpack2 = new ArrayList<Item>(backpack);
+		double wheightSum = 0;
+		double totalValue = 0;
+		boolean choose = true;
+
+		Item selectedItem;
+
+		while (!backpack2.isEmpty() && wheightSum <= maxWheight
+				&& choose == true) {
+
+			choose = false;
+			selectedItem = null;
+			double wheightNow = 100;
+
+			for (Item i : backpack2) {
+				if (i.getWheight() < wheightNow) {
+					if ((i.getWheight() + wheightSum) <= maxWheight) {
+						wheightNow = i.getWheight();
+						selectedItem = i;
+						choose = true;
+					}
+				}
+
+			}
+
+			if (choose == true) {
+				if (selectedItem.getWheight() + wheightSum <= maxWheight) {
+					wheightSum = wheightSum + selectedItem.getWheight();
+					totalValue = totalValue + selectedItem.getValue();
+					backpack2.remove(selectedItem);
+				}
+
+			}
+
+		}
+		System.out.println("TOTAL VALUE IN WHEIGHT APPROACH == " + totalValue);
+
+	}
+	
+	public static void densityApproach(List<Item> backpack, double maxWheight) {
+
+		List<Item> backpack2 = new ArrayList<Item>(backpack);
+		double wheightSum = 0;
+		double totalValue = 0;
+		boolean choose = true;
+
+		Item selectedItem;
+
+		while (!backpack2.isEmpty() && wheightSum <= maxWheight
+				&& choose == true) {
+
+			choose = false;
+			selectedItem = null;
+			double densityNow = 0;
+
+			for (Item i : backpack2) {
+				if ((i.getValue() / i.getWheight()) > densityNow) {
+					if ((i.getWheight() + wheightSum) <= maxWheight) {
+						densityNow = (i.getValue() / i.getWheight());
+						selectedItem = i;
+						choose = true;
+					}
+				}
+
+			}
+
+			if (choose == true) {
+				if (selectedItem.getWheight() + wheightSum <= maxWheight) {
+					wheightSum = wheightSum + selectedItem.getWheight();
+					totalValue = totalValue + selectedItem.getValue();
+					backpack2.remove(selectedItem);
+				}
+
+			}
+
+		}
+		System.out.println("TOTAL VALUE IN DENSITY APPROACH == " + totalValue);
+
+	}
 }

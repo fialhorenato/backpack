@@ -3,43 +3,33 @@ package org;
 
 public class Item {
 	
-	private int id;
-	private double peso;
-	private double valor;
+	private double wheight;
+	private double value;
 	
-	public Item(int id, double peso, double valor) {
-		this.id = id;
-		this.peso = peso;
-		this.valor = valor;
+	public Item(double peso, double valor) {
+		this.wheight = peso;
+		this.value = valor;
 	}
 
-	public double getPeso() {
-		return peso;
+	public double getWheight() {
+		return wheight;
 	}
 
-	public void setPeso(double peso) {
-		this.peso = peso;
+	public void setWheight(double wheight) {
+		this.wheight = wheight;
 	}
 
-	public double getValor() {
-		return valor;
+	public double getValue() {
+		return value;
 	}
 
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-	
-	public int getId() { 
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
+	public void setValue(double value) {
+		this.value = value;
 	}
 	
 	@Override
 	public String toString() {
-		return "=== ITEM === \n" + "PESO == " +  this.peso + "\n" + "VALOR == " + this.valor; 
+		return "=== ITEM === \n" + "WEIGHT == " +  this.wheight + "\n" + "VALUE == " + this.value; 
 	}
 	
 }
