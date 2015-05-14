@@ -6,9 +6,11 @@ import java.util.Random;
 
 public class Abordagens {
 
+	private static long start = System.currentTimeMillis();
+	
 	// SET THE BACKPACK SIZE
 
-	private static int backpackSize = 120;
+	private static int backpackSize = 100000;
 
 	// CREATE THE BACKPACK
 
@@ -25,17 +27,19 @@ public class Abordagens {
 			backpack.add(new Item(r.nextInt(100), r.nextInt(100)));
 		}
 
-		for (Item i : backpack) {
-			System.out.println(i.toString());
-		}
+		// for (Item i : backpack) {
+		// System.out.println(i.toString());
+		// }
 
 		profitApproach(backpack, 50);
 		wheightApproach(backpack, 50);
 		densityApproach(backpack, 50);
 	}
 
-	public static void profitApproach(List<Item> backpack, double maxWheight) {
 
+	public static void profitApproach(List<Item> backpack, double maxWheight) {
+		
+		start = System.currentTimeMillis();
 		List<Item> backpack2 = new ArrayList<Item>(backpack);
 		double wheightSum = 0;
 		double totalValue = 0;
@@ -71,12 +75,15 @@ public class Abordagens {
 			}
 
 		}
+		long mili = System.currentTimeMillis() - start;  
+		System.out.println("TIME SPENT == " + String.valueOf(Math.round(mili / 1000.0) + "SECONDS"));
 		System.out.println("TOTAL VALUE IN VALUE APPROACH == " + totalValue);
 
 	}
 
 	public static void wheightApproach(List<Item> backpack, double maxWheight) {
-
+		
+		start = System.currentTimeMillis();
 		List<Item> backpack2 = new ArrayList<Item>(backpack);
 		double wheightSum = 0;
 		double totalValue = 0;
@@ -112,12 +119,16 @@ public class Abordagens {
 			}
 
 		}
+		
+		long mili = System.currentTimeMillis() - start;  
+		System.out.println("TIME SPENT == " + String.valueOf(Math.round(mili / 1000.0) + "SECONDS"));
 		System.out.println("TOTAL VALUE IN WHEIGHT APPROACH == " + totalValue);
 
 	}
-	
+
 	public static void densityApproach(List<Item> backpack, double maxWheight) {
 
+		start = System.currentTimeMillis();
 		List<Item> backpack2 = new ArrayList<Item>(backpack);
 		double wheightSum = 0;
 		double totalValue = 0;
@@ -153,6 +164,9 @@ public class Abordagens {
 			}
 
 		}
+		
+		long mili = System.currentTimeMillis() - start;  
+		System.out.println("TIME SPENT == " + String.valueOf(Math.round(mili / 1000.0) + "SECONDS"));
 		System.out.println("TOTAL VALUE IN DENSITY APPROACH == " + totalValue);
 
 	}
