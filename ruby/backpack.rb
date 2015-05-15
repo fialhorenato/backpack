@@ -25,11 +25,7 @@ class Item
 end
 
 def soma_peso(backpack)
-  if backpack
-    backpack.map(&:peso).inject(0, &:+)
-  else
-    0
-  end
+  backpack.map(&:peso).inject(0, &:+) || 0
 end
 
 def escolha_por_peso(dispensa, limite)
