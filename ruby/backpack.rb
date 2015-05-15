@@ -152,13 +152,18 @@ def escolha_por_densidade(dispensa, limite)
   backpack
 end
 
+
+
+#### Iniciando a execucao das funcoes ######
+
+
 nomes = ['banana','abacaxi','camera','computador','iphone']
 valores = [15,20,5,25,10]
 pesos = [20,50,40,10,30]
 
-dispensa = d1 = d3 = d3 = m1 = m2 = m3 = []
-
 limite_peso = 60
+
+dispensa = d1 = d3 = d3 = []
 
 (0..4).each do |i|
   dispensa << Item.new(
@@ -182,30 +187,30 @@ puts "Limite de peso #{limite_peso}"
 
 puts "\n----------------------------------------"
 puts "Escolher itens por peso."
-m1 = escolha_por_peso(d1, limite_peso)
+backpack = escolha_por_peso(d1, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-m1.map{ |item| puts item.to_s}
+backpack.map{ |item| puts item.to_s}
 puts "########"
-puts "\nPeso da mochila: #{soma_peso(m1)}"
-puts "Valor total dos produtos: #{soma_valor(m1)}"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
 puts "----------------------------------------"
 
 puts "\nEscolher itens por lucro."
-m2 = escolha_por_valor(d2, limite_peso)
+backpack = escolha_por_valor(d2, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-m2.map{ |item| puts item.to_s }
+backpack.map{ |item| puts item.to_s }
 puts "##########"
-puts "\nPeso da mochila: #{soma_peso(m2)}"
-puts "Valor total dos produtos: #{soma_valor(m2)}"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
 puts "----------------------------------------"
 
 puts "\nEscolher itens por densidade."
-m3 = escolha_por_densidade(d3, limite_peso)
+backpack = escolha_por_densidade(d3, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-m3.map{ |item| puts item.to_s }
+backpack.map{ |item| puts item.to_s }
 puts "##########"
-puts "\nPeso da mochila: #{soma_peso(m3)}"
-puts "Valor total dos produtos: #{soma_valor(m3)}"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
