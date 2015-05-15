@@ -5,6 +5,8 @@ class Item
     @nome = nome
     @peso = peso
     @valor = valor
+
+    @densidade = @valor.to_f / @peso.to_f
   end
 
   def peso
@@ -19,8 +21,12 @@ class Item
     @valor
   end
 
+  def densidade
+    @densidade
+  end
+
   def to_s
-    "#{@nome} -- Valor: #{@valor} | Peso: #{@peso}"
+    "#{@nome} -- Valor: #{@valor} | Peso: #{@peso} | Densidade: #{@densidade}"
   end
 end
 
@@ -31,7 +37,6 @@ end
 def soma_valor(backpack)
   backpack.map(&:valor).inject(0, &:+) || 0
 end
-
 
 def escolha_por_valor(dispensa, limite)
   backpack = []
@@ -106,53 +111,101 @@ def escolha_por_peso(dispensa, limite)
   backpack
 end
 
+def escolha_por_densidade(dispensa, limite)
+  backpack = []
+  maior_densidade = -1
+  pick = false
 
-nomes = ['banana','abacaxi','camera','computador','iphone','macbook','atum','suco de maca','acai','barrinha','bota']
+  loop do
+    escolhido = nil
 
-dispensa = []
+    # Verifica cada item da dispensa guardando os de maior valor
+    dispensa.each do |item|
 
-limite_valor = 100
-limite_peso = 100
-limite_densidade = 100
+      if item.densidade > maior_densidade
 
-(0..nomes.length - 1).each do |i|
-  # Seleciona aleatoriamente 1 nome
-  nome = nomes.sample
+        maior_densidade = item.densidade
 
-  # Remove do array para nao duplicar itens
-  nomes.delete(nome)
+        escolhido = item
 
+        pick = true
+      end
+    end
+
+    break if !pick
+
+    # Soma o peso da mochila
+    peso_mochila = soma_peso(backpack)
+
+    # Sai caso tenha ultrapassado o peso ou nao tenha selecionado nenhum
+    break if peso_mochila + escolhido.peso > limite
+
+    # Remove o item escolhido da dispensa
+    dispensa.delete_if { |i| i == escolhido }
+
+    backpack << escolhido
+
+    pick = false
+    maior_densidade = -1
+  end
+
+  backpack
+end
+
+nomes = ['banana','abacaxi','camera','computador','iphone']
+valores = [15,20,5,25,10]
+pesos = [20,50,40,10,30]
+
+dispensa = d1 = d3 = d3 = m1 = m2 = m3 = []
+
+limite_peso = 60
+
+(0..4).each do |i|
   dispensa << Item.new(
-      nome,
-      (5..50).to_a.sample,
-      (5..50).to_a.sample
+      nomes[i],
+      pesos[i],
+      valores[i]
     )
 end
+
+d1 = dispensa.inject([]) { |a,element| a << element.dup }
+d2 = dispensa.inject([]) { |a,element| a << element.dup }
+d3 = dispensa.inject([]) { |a,element| a << element.dup }
 
 
 puts "Itens na dispensa"
 puts "\n"
-# Mostra como esta a dispensa
-dispensa.map{ |item| puts item.to_s }
 
 puts "\nPeso total da dispensa: #{soma_peso(dispensa)}"
-puts "\n----------------------------------------"
+puts "Valor total da dispensa: #{soma_valor(dispensa)}"
+puts "Limite de peso #{limite_peso}"
 
-puts "\nEscolher itens por peso. Limite de peso #{limite_peso}"
-backpack = escolha_por_peso(dispensa, limite_peso)
+puts "\n----------------------------------------"
+puts "Escolher itens por peso."
+m1 = escolha_por_peso(d1, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-backpack.map{ |item| puts item.to_s}
+m1.map{ |item| puts item.to_s}
 puts "########"
-puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "\nPeso da mochila: #{soma_peso(m1)}"
+puts "Valor total dos produtos: #{soma_valor(m1)}"
+puts "----------------------------------------"
 
-puts "\n----------------------------------------"
-
-puts "\nEscolher itens por lucro. Limite de peso #{limite_peso}"
-backpack = escolha_por_valor(dispensa, limite_peso)
+puts "\nEscolher itens por lucro."
+m2 = escolha_por_valor(d2, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-backpack.map{ |item| puts item.to_s }
+m2.map{ |item| puts item.to_s }
 puts "##########"
-puts "\nPeso da mochila: #{soma_peso(backpack)}"
-puts "Valor total dos produtos: #{soma_valor(backpack)}"
+puts "\nPeso da mochila: #{soma_peso(m2)}"
+puts "Valor total dos produtos: #{soma_valor(m2)}"
+puts "----------------------------------------"
+
+puts "\nEscolher itens por densidade."
+m3 = escolha_por_densidade(d3, limite_peso)
+puts "\nItens escolhidos"
+puts "##########"
+m3.map{ |item| puts item.to_s }
+puts "##########"
+puts "\nPeso da mochila: #{soma_peso(m3)}"
+puts "Valor total dos produtos: #{soma_valor(m3)}"
