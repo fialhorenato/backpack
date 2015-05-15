@@ -71,16 +71,8 @@ def escolha_por_peso(dispensa, limite)
       break
     end
 
-    # Finaliza caso estoure o peso ou nao pegue nenhum item da dispensa
-    #break if soma_peso(backpack) + menor_valor > limite || !pick
-
-    # Index do item escolhido
-    idx = dispensa.index(choosen)
-    
     # Remove o item escolhido da dispensa   
-    (dispensa.length-1).downto(0){ |i|
-      dispensa.delete_at( i ) if i == idx
-    }
+    dispensa.delete_if { |i| i == choosen }
 
     # Adiciona o item na mochila
     backpack << choosen if choosen
