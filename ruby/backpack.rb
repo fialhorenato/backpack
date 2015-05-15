@@ -190,7 +190,7 @@ puts "Escolher itens por peso."
 backpack = escolha_por_peso(d1, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-backpack.map{ |item| puts item.to_s}
+puts backpack
 puts "########"
 puts "\nPeso da mochila: #{soma_peso(backpack)}"
 puts "Valor total dos produtos: #{soma_valor(backpack)}"
@@ -200,7 +200,7 @@ puts "\nEscolher itens por lucro."
 backpack = escolha_por_valor(d2, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-backpack.map{ |item| puts item.to_s }
+puts backpack
 puts "##########"
 puts "\nPeso da mochila: #{soma_peso(backpack)}"
 puts "Valor total dos produtos: #{soma_valor(backpack)}"
@@ -210,7 +210,7 @@ puts "\nEscolher itens por densidade."
 backpack = escolha_por_densidade(d3, limite_peso)
 puts "\nItens escolhidos"
 puts "##########"
-backpack.map{ |item| puts item.to_s }
+puts backpack
 puts "##########"
 puts "\nPeso da mochila: #{soma_peso(backpack)}"
 puts "Valor total dos produtos: #{soma_valor(backpack)}"
