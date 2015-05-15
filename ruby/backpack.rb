@@ -44,7 +44,42 @@ def escolha_por_peso(dispensa, limite)
       end
     end
 
-    break if soma_peso(backpack) + menor_valor > limite || !pick
+    # Sai caso nao tenha pegado nada
+    break if !pick
+
+    # Pesamos a mochila
+    peso_mochila = soma_peso(backpack)
+
+    # Caso esteja ultrapassando o limite com este item
+    if peso_mochila + menor_valor > limite
+      picked = nil
+      maior = 0
+      
+      # Agora passamos novamente na dispensa para ver se tem
+      # Um item mais pesado que a mochila mas que nao ultrapasse o limite
+      dispensa.each do |item|
+        if item.peso > maior && item.peso <= limite && item.peso > peso_mochila
+          maior = item.peso
+          picked = dispensa.index(item)
+        end
+      end
+
+      # Caso encontre este item
+      # entao devolve os itens para a dispensa e coloca este item na mochila
+      if picked
+          backpack.each do |item_mochila|
+            dispensa << item_mochila
+          end
+          backpack = []
+          backpack << dispensa[picked]        
+      end
+
+      # Termina o programa
+      break
+    end
+
+    # Finaliza caso estoure o peso ou nao pegue nenhum item da dispensa
+    #break if soma_peso(backpack) + menor_valor > limite || !pick
 
     # Index do item escolhido
     idx = dispensa.index(choosen)
@@ -55,7 +90,8 @@ def escolha_por_peso(dispensa, limite)
     }
 
     # Adiciona o item na mochila
-    backpack << choosen if choosen != nil
+    backpack << choosen if choosen
+    
     pick = false
     menor_valor = 9999
   end
