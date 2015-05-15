@@ -1,139 +1,108 @@
 #!/usr/bin/ruby
 
 class Item
+  def initialize(nome, peso, valor)
+    @nome = nome
+    @peso = peso
+    @valor = valor
+  end
 
-    def initialize(value, weight)
-        @value=value
-        @weight=weight
-    end
+  def peso
+    @peso
+  end
 
-    def value
-        @value
-    end
+  def nome
+    @nome
+  end
 
-    def weight
-        @weight
-    end
+  def valor
+    @valor
+  end
 
+  def to_s
+    "#{@nome} -- Valor: #{@valor} | Peso: #{@peso}"
+  end
 end
 
+def soma_peso(backpack)
+  if backpack
+    backpack.map(&:peso).inject(0, &:+)
+  else
+    0
+  end
+end
 
-def approachByProfit(backpack , maxweight)
+def escolha_por_peso(dispensa, limite)
+  backpack = []
+  menor_valor = 99999
+  pick = false
 
-
-    backpack2 = Array.new(backpack)
-    actualwheight = 0
-    valuesum = 0
-    pick = true
+  loop do
     choosen = nil
 
-    while(!backpack2.empty? && actualwheight <= maxweight && pick == true)
-
-        pick = false
-        biggestvalue = 0
-
-        for i in backpack2
-            if (biggestvalue <= i.value)
-                if((actualwheight + i.weight) < maxweight)
-                    biggestvalue = i.value
-                    choosen = i
-                    pick = true
-                end
-            end
-        end
-
-        if (pick == true)
-            actualwheight = actualwheight + choosen.weight
-            valuesum = valuesum + choosen.value
-            backpack2.delete(choosen)
-        end
+    dispensa.each do |item|
+      if item.peso < menor_valor
+        menor_valor = item.peso
+        choosen = item
+        pick = true
+      end
     end
 
-    puts "BIGGEST VALUE WITH VALUE APPROACH IS #{valuesum}"
+    break if soma_peso(backpack) + menor_valor > limite || !pick
+
+    # Index do item escolhido
+    idx = dispensa.index(choosen)
+    
+    # Remove o item escolhido da dispensa   
+    (dispensa.length-1).downto(0){ |i|
+      dispensa.delete_at( i ) if i == idx
+    }
+
+    # Adiciona o item na mochila
+    backpack << choosen if choosen != nil
+    pick = false
+    menor_valor = 9999
+  end
+
+  backpack
 end
 
 
-def approachbyWheight(backpack , maxweight)
+nomes = ['banana','abacaxi','camera','computador','iphone','macbook','atum','suco de maca','acai','barrinha','bota']
 
-    backpack2 = Array.new(backpack)
-    actualwheight = 0
-    valuesum = 0
-    pick = true
-    choosen = nil
-
-    while(!backpack2.empty? && actualwheight <= maxweight && pick == true)
-
-        pick = false
-        biggestvalue = maxweight
-
-        for i in backpack2
-            if (biggestvalue > i.weight)
-                if((actualwheight + i.weight) < maxweight)
-                    biggestvalue = i.weight
-                    choosen = i
-                    pick = true
-                end
-            end
-        end
-
-        if (pick == true)
-            actualwheight = actualwheight + choosen.weight
-            valuesum = valuesum + choosen.value
-            backpack2.delete(choosen)
-        end
-    end
-
-    puts "BIGGEST VALUE WITH WEIGHT APPROACH IS #{valuesum}"
-end
-
-def approachbyDensity(backpack , maxweight)
-
-    backpack2 = Array.new(backpack)
-    actualwheight = 0
-    valuesum = 0
-    pick = true
-    choosen = nil
-
-    while(!backpack2.empty? && actualwheight <= maxweight && pick == true)
-
-        pick = false
-        biggestvalue = 0
-
-        for i in backpack2
-            if (biggestvalue < (i.value / i.weight))
-                if((actualwheight + i.weight) < maxweight)
-                    biggestvalue = (i.value / i.weight)
-                    choosen = i
-                    pick = true
-                end
-            end
-        end
-
-        if (pick == true)
-            actualwheight = actualwheight + choosen.weight
-            valuesum = valuesum + choosen.value
-            backpack2.delete(choosen)
-        end
-    end
-
-    puts "BIGGEST VALUE WITH DENSITY APPROACH IS #{valuesum}"
-end
-
-backpack = []
+dispensa = []
 
 limite_valor = 100
 limite_peso = 100
 limite_densidade = 100
 
-(0..10).each do |i|
-  backpack << Item.new(
-    (0..100).to_a.sample,
-    (0..100).to_a.sample
-  )
+(0..nomes.length - 1).each do |i|
+  # Seleciona aleatoriamente 1 nome
+  nome = nomes.sample
+  
+  # Remove do array para nao duplicar itens
+  nomes.delete(nome)
+
+  dispensa << Item.new(
+      nome, 
+      (5..100).to_a.sample,
+      (5..100).to_a.sample
+    )
 end
 
-backpack.map{ |item| puts "Valor: #{item.value} ; Peso: #{item.weight}"}
+# Mostra como esta a dispensa
+dispensa.map{ |item| puts item.to_s }
 
-approachByProfit(backpack , limite_valor)
-approachbyWheight(backpack, limite_peso)
-approachbyDensity(backpack, limite_densidade)
+puts "\nPeso total da dispensa: #{soma_peso(dispensa)}"
+puts "\nEscolher itens por peso. Limite de peso #{limite_peso}"
+
+# Faz a escolha baseado no peso
+backpack = escolha_por_peso(dispensa, limite_peso)
+
+puts "\n\nItens escolhidos"
+
+# Mostra como ficou a mochila
+backpack.map{ |item| puts item.to_s}
+
+puts "\n\nPeso da mochila: #{soma_peso(backpack)}"
+
