@@ -2,17 +2,17 @@
 
 class Item
 
-    def initialize(value, wheight)
+    def initialize(value, weight)
         @value=value
-        @wheight=wheight
+        @weight=weight
     end
 
     def value
         @value
     end
 
-    def wheight
-        @wheight
+    def weight
+        @weight
     end
 
 end
@@ -34,7 +34,7 @@ def approachByProfit(backpack , maxweight)
 
         for i in backpack2
             if (biggestvalue <= i.value)
-                if((actualwheight + i.wheight) < maxweight)
+                if((actualwheight + i.weight) < maxweight)
                     biggestvalue = i.value
                     choosen = i
                     pick = true
@@ -43,7 +43,7 @@ def approachByProfit(backpack , maxweight)
         end
 
         if (pick == true)
-            actualwheight = actualwheight + choosen.wheight
+            actualwheight = actualwheight + choosen.weight
             valuesum = valuesum + choosen.value
             backpack2.delete(choosen)
         end
@@ -54,7 +54,6 @@ end
 
 
 def approachbyWheight(backpack , maxweight)
-
 
     backpack2 = Array.new(backpack)
     actualwheight = 0
@@ -68,9 +67,9 @@ def approachbyWheight(backpack , maxweight)
         biggestvalue = maxweight
 
         for i in backpack2
-            if (biggestvalue > i.wheight)
-                if((actualwheight + i.wheight) < maxweight)
-                    biggestvalue = i.wheight
+            if (biggestvalue > i.weight)
+                if((actualwheight + i.weight) < maxweight)
+                    biggestvalue = i.weight
                     choosen = i
                     pick = true
                 end
@@ -78,7 +77,7 @@ def approachbyWheight(backpack , maxweight)
         end
 
         if (pick == true)
-            actualwheight = actualwheight + choosen.wheight
+            actualwheight = actualwheight + choosen.weight
             valuesum = valuesum + choosen.value
             backpack2.delete(choosen)
         end
@@ -88,7 +87,6 @@ def approachbyWheight(backpack , maxweight)
 end
 
 def approachbyDensity(backpack , maxweight)
-
 
     backpack2 = Array.new(backpack)
     actualwheight = 0
@@ -102,9 +100,9 @@ def approachbyDensity(backpack , maxweight)
         biggestvalue = 0
 
         for i in backpack2
-            if (biggestvalue < (i.value / i.wheight))
-                if((actualwheight + i.wheight) < maxweight)
-                    biggestvalue = (i.value / i.wheight)
+            if (biggestvalue < (i.value / i.weight))
+                if((actualwheight + i.weight) < maxweight)
+                    biggestvalue = (i.value / i.weight)
                     choosen = i
                     pick = true
                 end
@@ -112,7 +110,7 @@ def approachbyDensity(backpack , maxweight)
         end
 
         if (pick == true)
-            actualwheight = actualwheight + choosen.wheight
+            actualwheight = actualwheight + choosen.weight
             valuesum = valuesum + choosen.value
             backpack2.delete(choosen)
         end
@@ -121,20 +119,21 @@ def approachbyDensity(backpack , maxweight)
     puts "BIGGEST VALUE WITH DENSITY APPROACH IS #{valuesum}"
 end
 
+backpack = []
 
-backpack= Array.new()
+limite_valor = 100
+limite_peso = 100
+limite_densidade = 100
 
-r = Random.new
-
-for i in 0..2
-   backpack << Item.new(r.rand(100),r.rand(100))
+(0..10).each do |i|
+  backpack << Item.new(
+    (0..100).to_a.sample,
+    (0..100).to_a.sample
+  )
 end
 
-for i in backpack
-   puts "VALOR = #{i.value}"
-   puts "PESO = #{i.wheight}"
-end
+backpack.map{ |item| puts "Valor: #{item.value} ; Peso: #{item.weight}"}
 
-approachByProfit(backpack , 100)
-approachbyWheight(backpack, 100)
-approachbyDensity(backpack, 100)
+approachByProfit(backpack , limite_valor)
+approachbyWheight(backpack, limite_peso)
+approachbyDensity(backpack, limite_densidade)
