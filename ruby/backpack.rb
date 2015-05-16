@@ -5,6 +5,8 @@ class Item
     @nome = nome
     @peso = peso
     @valor = valor
+
+    @densidade = @valor.to_f / @peso.to_f
   end
 
   def peso
@@ -19,8 +21,12 @@ class Item
     @valor
   end
 
+  def densidade
+    @densidade
+  end
+
   def to_s
-    "#{@nome} -- Valor: #{@valor} | Peso: #{@peso}"
+    "#{@nome} -- Valor: #{@valor} | Peso: #{@peso} | Densidade: #{@densidade}"
   end
 end
 
@@ -28,98 +34,183 @@ def soma_peso(backpack)
   backpack.map(&:peso).inject(0, &:+) || 0
 end
 
-def escolha_por_peso(dispensa, limite)
+def soma_valor(backpack)
+  backpack.map(&:valor).inject(0, &:+) || 0
+end
+
+def escolha_por_valor(dispensa, limite)
   backpack = []
-  menor_valor = 99999
+  maior_valor = 0
   pick = false
 
   loop do
-    choosen = nil
+    escolhido = nil
 
+    # Verifica cada item da dispensa guardando os de maior valor
     dispensa.each do |item|
-      if item.peso < menor_valor
-        menor_valor = item.peso
-        choosen = item
+      if item.valor > maior_valor
+
+        maior_valor = item.valor
+
+        escolhido = item
+
         pick = true
       end
     end
 
-    # Sai caso nao tenha pegado nada
-    break if !pick
+    # Soma o peso da mochila
+    peso_mochila = soma_peso(backpack)
+
+    # Sai caso tenha ultrapassado o peso ou nao tenha selecionado nenhum
+    break if peso_mochila + escolhido.peso > limite || !pick
+
+    # Remove o item escolhido da dispensa
+    dispensa.delete_if { |i| i == escolhido }
+
+    backpack << escolhido
+
+    pick = false
+    maior_valor = 0
+  end
+
+  backpack
+end
+
+def escolha_por_peso(dispensa, limite)
+  backpack = []
+  menor_peso = 99999
+  pick = false
+
+  loop do
+    escolhido = nil
+
+    dispensa.each do |item|
+      if item.peso < menor_peso
+        menor_peso = item.peso
+        escolhido = item
+        pick = true
+      end
+    end
 
     # Pesamos a mochila
     peso_mochila = soma_peso(backpack)
 
-    # Caso esteja ultrapassando o limite com este item
-    if peso_mochila + menor_valor > limite
-      picked = nil
-      maior = 0
+    # Sai caso tenha ultrapassado o peso ou nao tenha selecionado nenhum
+    break if peso_mochila + menor_peso > limite || !pick
 
-      # Agora passamos novamente na dispensa para ver se tem
-      # Um item mais pesado que a mochila mas que nao ultrapasse o limite
-      dispensa.each do |item|
-        if item.peso > maior && item.peso <= limite && item.peso > peso_mochila
-          maior = item.peso
-          picked = dispensa.index(item)
-        end
-      end
-
-      # Caso tenha encontrado um item melhor, limpa a mochila e pega esse item
-      backpack = [] << dispensa[picked] if picked
-
-      # Termina o programa
-      break
-    end
-
-    # Remove o item escolhido da dispensa   
-    dispensa.delete_if { |i| i == choosen }
+    # Remove o item escolhido da dispensa
+    dispensa.delete_if { |i| i == escolhido }
 
     # Adiciona o item na mochila
-    backpack << choosen if choosen
-    
+    backpack << escolhido
+
     pick = false
-    menor_valor = 9999
+    menor_peso = 9999
+  end
+
+  backpack
+end
+
+def escolha_por_densidade(dispensa, limite)
+  backpack = []
+  maior_densidade = -1
+  pick = false
+
+  loop do
+    escolhido = nil
+
+    # Verifica cada item da dispensa guardando os de maior valor
+    dispensa.each do |item|
+
+      if item.densidade > maior_densidade
+
+        maior_densidade = item.densidade
+
+        escolhido = item
+
+        pick = true
+      end
+    end
+
+    break if !pick
+
+    # Soma o peso da mochila
+    peso_mochila = soma_peso(backpack)
+
+    # Sai caso tenha ultrapassado o peso ou nao tenha selecionado nenhum
+    break if peso_mochila + escolhido.peso > limite
+
+    # Remove o item escolhido da dispensa
+    dispensa.delete_if { |i| i == escolhido }
+
+    backpack << escolhido
+
+    pick = false
+    maior_densidade = -1
   end
 
   backpack
 end
 
 
-nomes = ['banana','abacaxi','camera','computador','iphone','macbook','atum','suco de maca','acai','barrinha','bota']
 
-dispensa = []
+#### Iniciando a execucao das funcoes ######
 
-limite_valor = 100
-limite_peso = 100
-limite_densidade = 100
 
-(0..nomes.length - 1).each do |i|
-  # Seleciona aleatoriamente 1 nome
-  nome = nomes.sample
-  
-  # Remove do array para nao duplicar itens
-  nomes.delete(nome)
+nomes = ['banana','abacaxi','camera','computador','iphone']
+valores = [15,20,5,25,10]
+pesos = [20,50,40,10,30]
 
+limite_peso = 60
+
+dispensa = d1 = d3 = d3 = []
+
+(0..4).each do |i|
   dispensa << Item.new(
-      nome, 
-      (5..100).to_a.sample,
-      (5..100).to_a.sample
+      nomes[i],
+      pesos[i],
+      valores[i]
     )
 end
 
-# Mostra como esta a dispensa
-dispensa.map{ |item| puts item.to_s }
+d1 = dispensa.inject([]) { |a,element| a << element.dup }
+d2 = dispensa.inject([]) { |a,element| a << element.dup }
+d3 = dispensa.inject([]) { |a,element| a << element.dup }
+
+
+puts "Itens na dispensa"
+puts "\n"
 
 puts "\nPeso total da dispensa: #{soma_peso(dispensa)}"
-puts "\nEscolher itens por peso. Limite de peso #{limite_peso}"
+puts "Valor total da dispensa: #{soma_valor(dispensa)}"
+puts "Limite de peso #{limite_peso}"
 
-# Faz a escolha baseado no peso
-backpack = escolha_por_peso(dispensa, limite_peso)
+puts "\n----------------------------------------"
+puts "Escolher itens por peso."
+backpack = escolha_por_peso(d1, limite_peso)
+puts "\nItens escolhidos"
+puts "##########"
+puts backpack
+puts "########"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
+puts "----------------------------------------"
 
-puts "\n\nItens escolhidos"
+puts "\nEscolher itens por lucro."
+backpack = escolha_por_valor(d2, limite_peso)
+puts "\nItens escolhidos"
+puts "##########"
+puts backpack
+puts "##########"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
+puts "----------------------------------------"
 
-# Mostra como ficou a mochila
-backpack.map{ |item| puts item.to_s}
-
-puts "\n\nPeso da mochila: #{soma_peso(backpack)}"
-
+puts "\nEscolher itens por densidade."
+backpack = escolha_por_densidade(d3, limite_peso)
+puts "\nItens escolhidos"
+puts "##########"
+puts backpack
+puts "##########"
+puts "\nPeso da mochila: #{soma_peso(backpack)}"
+puts "Valor total dos produtos: #{soma_valor(backpack)}"
